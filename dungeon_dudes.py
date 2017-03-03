@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import random
 
 class Treasure:
 
@@ -58,7 +58,6 @@ class Hero(Character):
     def name(self, name):
         self._name = name
 
-    
     def __str__(self):
         statistics = "Heros Name: {0}\nHealth: {1}\nGoodies:\n{2}"
         return statistics.format(self.name, self.health, self.getSpoils())
@@ -74,9 +73,53 @@ class Monster(Character):
         return statistics.format(self.health, self.getSpoils())
 
 
-def main():
+class Adventure:
 
+    def __init__(self, hero):
+        self.hero = hero
+
+    def diceRoll(self):
+        return random.randint(1,6)
+        
+    def turnRoll(self):
+        result = []
+        result.append(self.diceRoll)
+        result.append(self.diceRoll)
+        return result
+
+    def combat(self, number):
+        heroResult = []
+        for i in range(3):
+            heroResult.append(self.diceRoll())
+
+        monsterResult = []
+        for i in range(number):
+            monsterResult.append(self.diceRoll())
+        
+        hFlag = 0  
+        for index in heroResult:    
+            print(index)
+            for results in monsterResult:
+                print("monster")
+                print(results)
+                if index >= results:
+                    hFlag += 1
+        print("total great", hFlag)
+                
+        
+ 
+
+        
+        
+    
+def main():
+    random.seed()
+    
+    
     hero = Hero("Captain UnderPants", 10)
+    
+    quest = Adventure(hero)
+    quest.combat(2)
 
     hero.lootBag.append("Fresh Undies")
     hero.lootBag.append("chewed gum")
