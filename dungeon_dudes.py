@@ -27,47 +27,75 @@ class Loot:
             result.append("\n")
         return "".join(result)
 
+class Character:
 
-class Hero:
+    def __init__(self, health = 0):
+        self.health = health
+        self.lootBag = Loot()
 
-    def __init__(self, name):
-        self.name = name
-        self.health = 10
-        self.loot = Loot()
+    @property
+    def health(self):
+        """ The characters health """
+        return self._health
+
+    @health.setter
+    def health(self, health):
+        """ Set the charachters health """
+        self._health = health
+
+    def decreaseHealth(self):
+        """ Decrease health when they loose a battle """
+        self.health -= 1
 
     def addSpoils(self, treasure):
         """ Adds treasure to the loot bag """
-        self.loot.addLoot(treasure)
+        self.lootBag.addLoot(treasure)
 
     def getSpoils(self):
         """ returns the contents of the loot bag """
-        return str(self.loot)
+        return str(self.lootBag)
 
-    def getHealth(self):
-        """ The heros health """
-        return self.health
+        
+        
 
-    def decreaseHealth(self):
-        """ Decrease the heros health when they loose a battle """
-        self.health -= 1
+class Hero(Character):
+
+    def __init__(self, name , health):
+        super() .__init__(health)
+        self.name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
 
     def __str__(self):
         statistics = "Heros Name: {0}\nHealth: {1}\nGoodies:\n{2}"
         return statistics.format(self.name, self.health, self.getSpoils())
 
+class Monster(Character):
+
+    def __init__(self, health):
+        super() .__init__(health)
+
+    def __str__(self):
+        statistics = "Monster Health: {0}\nGoodies:\n{2}"
+        return statistics.format(self.name, self.health, self.getSpoils())
+        
+
 
 def main():
 
-    hero = Hero("Captain UnderPants")
+    hero = Hero("Captain UnderPants", 10)
 
     hero.addSpoils("Fresh Undies")
     hero.addSpoils("chewed gum")
     hero.addSpoils("condom wrapper")
-    print(hero.getSpoils())
-    print(hero.getHealth())
-    hero.decreaseHealth()
-    print(hero.getHealth())
     print(str(hero))
+    
 
 
 if __name__ == "__main__":
