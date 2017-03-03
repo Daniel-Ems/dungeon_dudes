@@ -8,7 +8,6 @@ class Treasure:
 
     def __str__ (self):
         view = "{0}"
-        print("creating treasure")
         return view.format(self.title)
 
 class Loot:
@@ -27,13 +26,27 @@ class Loot:
             result.append("\n")
         return "".join(result)
 
+class Hero:
+
+    def __init__(self, name):
+        self.name = name
+        self.health = 10
+        self.loot = Loot()
+
+    def addSpoils(self, spoils):
+        self.loot.addLoot(spoils)
+
+    def getSpoils(self):
+        return str(self.loot)
+
 def main():
 
-    lootbag = Loot()
-    lootbag.addLoot("Fresh Undies")
-    lootbag.addLoot("chewed gum")
-    lootbag.addLoot("condom wrapper")
-    print(str(lootbag))
+    hero = Hero("Captain UnderPants")
+
+    hero.addSpoils("Fresh Undies")
+    hero.addSpoils("chewed gum")
+    hero.addSpoils("condom wrapper")
+    print(hero.getSpoils())
     
     
 
