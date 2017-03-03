@@ -11,28 +11,11 @@ class Treasure:
         return view.format(self.title)
 
 
-class Loot:
-
-    def __init__(self):
-        self.loot = []
-
-    def addLoot(self, spoil):
-        treasure = Treasure(spoil)
-        self.loot.append(treasure)
-
-    def __str__(self):
-        result = []
-        for items, treasure in enumerate(self.loot):
-            result.append(str(treasure))
-            result.append("\n")
-        return "".join(result)
-
-
 class Character:
 
     def __init__(self, health=0):
         self.health = health
-        self.lootBag = Loot()
+        self.lootBag = []
 
     @property
     def health(self):
@@ -46,15 +29,19 @@ class Character:
 
     def decreaseHealth(self):
         """ Decrease health when they loose a battle """
-        self.health -= 1
-
-    def addSpoils(self, treasure):
-        """ Adds treasure to the loot bag """
-        self.lootBag.addLoot(treasure)
+        self._health -= 1
 
     def getSpoils(self):
         """ returns the contents of the loot bag """
-        return str(self.lootBag)
+        result = []
+        for items, treasure in enumerate(self.lootBag):
+            result.append(str(treasure))
+            result.append("\n")
+        return "".join(result)
+
+    def __str__(self):
+        characterStats = "Players health: {0}\nPlayers loot: \n{1}"
+        characterStats.format(self.health, self.getSpoils())
 
 
 class Hero(Character):
@@ -71,6 +58,7 @@ class Hero(Character):
     def name(self, name):
         self._name = name
 
+    
     def __str__(self):
         statistics = "Heros Name: {0}\nHealth: {1}\nGoodies:\n{2}"
         return statistics.format(self.name, self.health, self.getSpoils())
@@ -82,18 +70,21 @@ class Monster(Character):
         super() .__init__(health)
 
     def __str__(self):
-        statistics = "Monster Health: {0}\nGoodies:\n{2}"
-        return statistics.format(self.name, self.health, self.getSpoils())
+        statistics = "Monster Health: {0}\nGoodies:\n{1}"
+        return statistics.format(self.health, self.getSpoils())
 
 
 def main():
 
     hero = Hero("Captain UnderPants", 10)
 
-    hero.addSpoils("Fresh Undies")
-    hero.addSpoils("chewed gum")
-    hero.addSpoils("condom wrapper")
+    hero.lootBag.append("Fresh Undies")
+    hero.lootBag.append("chewed gum")
+    hero.lootBag.append("capper")
     print(str(hero))
+
+    monster = Monster(2)
+    print(str(monster))
 
 
 if __name__ == "__main__":
