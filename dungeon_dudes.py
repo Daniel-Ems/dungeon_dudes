@@ -8,13 +8,34 @@ class Treasure:
 
     def __str__ (self):
         view = "{0}"
+        print("creating treasure")
         return view.format(self.title)
+
+class Loot:
+
+    def __init__(self):
+        self.loot = []
+
+    def addLoot(self, spoil):
+        treasure = Treasure(spoil)
+        self.loot.append(treasure)
+
+    def __str__(self):
+        result = []
+        for items, spoils in enumerate(self.loot):
+            result.append(str(spoils))
+            result.append("\n")
+        return "".join(result)
 
 def main():
 
-    treasure = Treasure("Fresh Pair of Undies")
-
-    print(str(treasure))
+    lootbag = Loot()
+    lootbag.addLoot("Fresh Undies")
+    lootbag.addLoot("chewed gum")
+    lootbag.addLoot("condom wrapper")
+    print(str(lootbag))
+    
+    
 
     
 
