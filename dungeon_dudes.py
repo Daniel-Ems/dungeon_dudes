@@ -27,9 +27,10 @@ class Loot:
             result.append("\n")
         return "".join(result)
 
+
 class Character:
 
-    def __init__(self, health = 0):
+    def __init__(self, health=0):
         self.health = health
         self.lootBag = Loot()
 
@@ -55,12 +56,10 @@ class Character:
         """ returns the contents of the loot bag """
         return str(self.lootBag)
 
-        
-        
 
 class Hero(Character):
 
-    def __init__(self, name , health):
+    def __init__(self, name, health):
         super() .__init__(health)
         self.name = name
 
@@ -76,6 +75,7 @@ class Hero(Character):
         statistics = "Heros Name: {0}\nHealth: {1}\nGoodies:\n{2}"
         return statistics.format(self.name, self.health, self.getSpoils())
 
+
 class Monster(Character):
 
     def __init__(self, health):
@@ -84,7 +84,6 @@ class Monster(Character):
     def __str__(self):
         statistics = "Monster Health: {0}\nGoodies:\n{2}"
         return statistics.format(self.name, self.health, self.getSpoils())
-        
 
 
 def main():
@@ -95,7 +94,6 @@ def main():
     hero.addSpoils("chewed gum")
     hero.addSpoils("condom wrapper")
     print(str(hero))
-    
 
 
 if __name__ == "__main__":
