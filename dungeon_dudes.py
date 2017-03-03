@@ -2,13 +2,14 @@
 
 
 class Treasure:
-    
+
     def __init__(self, title):
         self.title = title
 
-    def __str__ (self):
+    def __str__(self):
         view = "{0}"
         return view.format(self.title)
+
 
 class Loot:
 
@@ -26,6 +27,7 @@ class Loot:
             result.append("\n")
         return "".join(result)
 
+
 class Hero:
 
     def __init__(self, name):
@@ -39,6 +41,7 @@ class Hero:
     def getSpoils(self):
         return str(self.loot)
 
+
 def main():
 
     hero = Hero("Captain UnderPants")
@@ -47,10 +50,7 @@ def main():
     hero.addSpoils("chewed gum")
     hero.addSpoils("condom wrapper")
     print(hero.getSpoils())
-    
-    
 
-    
 
 if __name__ == "__main__":
     main()
