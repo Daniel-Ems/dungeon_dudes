@@ -121,9 +121,6 @@ class Room:
             numMonsters.append("\n")
         return "".join(numMonsters)
 
-    def popMonster(self):
-        return self.monsterList.pop()
-
     def generateMonsters(self):
         numMonsters = random.randint(1, 6)
         for monsters in range(numMonsters):
@@ -132,6 +129,9 @@ class Room:
             monsterInitiative = random.randint(1, 6)
             monster = Monster(monsterHealth, monsterStrength, monsterInitiative)
             self.monsterList.append(monster)
+
+    def popMonster(self):
+        return self.monsterList.pop()
 
     def __str__(self):
         roomDetails = "{0}\n{1}"
@@ -143,11 +143,12 @@ class Adventure:
 Football Field", "The Gym", "The Movie Theatre", "The Parking Lot", "The \
 Classroom", "The Mall", "Your Crushes House", "The Diner", "The Playground"]
 
-    def __init__(self, hero):
-        self.hero = hero
+    def __init__(self, name, health, strength):
+        self.hero = hero(name, health, strength)
         self.map = []
         self.buildMap()
-        self.level = 0
+        self.room = 0
+        self.monster = 0
 
     def diceRoll(self):
         return random.randint(1, 6)
@@ -173,13 +174,18 @@ Classroom", "The Mall", "Your Crushes House", "The Diner", "The Playground"]
             room = Room(Adventure.locations.pop(index-1))
             self.map.append(room)
 
-    def nextLevel(self):
-        self.level = self.map.pop()
-        
+    def nextRoom(self):
+        if len(self.map) == 0:
+            self.room = 1
+        else:
+            self.room = self.map.pop()
 
-    
-   
-        
+    def nextMonster(self):
+        if len(self.room.monsterList) == 0:
+            self.monster = 1
+        else:
+            self.monster = self.room.popMonster()
+
 
 def main():
     random.seed()
@@ -188,12 +194,13 @@ def main():
                    "C: List your health", "D: List the monsters health", 
                    "E: Attack the Monster"]
     def menu(quest):
-        while True:
+        while quest.hero.health > 0:
             try:
                 for items in menuOptions:
                     print(items)
                 print("")
-                userSelection = input("What would you like to do? ").lower()    
+                userSelection = input("What would you like to do? ").lower()
+                print("")    
             except ValueError:
                 print("Not today bossman")
                 continue
@@ -202,26 +209,36 @@ def main():
                 continue
             else:
                 if userSelection == 'a':
-                    print("Your loot:", hero.getLoot())
+                    print("Your loot:", quest.hero.getLoot())
+
                 if userSelection == 'b':
-                    if quest.level == 0 or len(quest.level.monsterList) == 0:
-                        quest.nextLevel()
-                        nextRoom()
-                    elif len(quest.level.monsterList) > 0:
+                    if quest.room == 0 or len(quest.room.monsterList) == 0:
+                        quest.nextRoom()
+                        exploreRoom()
+                    elif len(quest.room.monsterList) > 0:
                         print("No Running!")
+
                 if userSelection == 'c':
-                    print("Your health:", hero.health)
+                    print("Your health:", quest.hero.health)
+
                 if userSelection == 'd':
-                    print("Monsters health:", monster.health)
+                    if quest.monster == 0:
+                        print("Don't wet your pants, your safe\n")
+                    elif quest.monster == 1:
+                        print("They are gone sweetie, don't worry\n")
+                    else:
+                        print("Monsters health:", quest.monster.health)
                 if userSelection == 'e':
-                    battle()
-            
+                    if quest.monster == 0:
+                        print("There's no one to kill, Psycho\n")
+                    elif quest.monster == 1:
+                        print("Take a breath, you already kicked thier butts")
+                    else:
+                        battle()
 
-        
     def battle():
-        while(quest.level.monsterList):    
-            monster = quest.level.popMonster()
-
+        while(quest.monster != 1):    
+            monster = quest.monster
             if hero.initiative >= monster.initiative:
                 attack = hero
                 defend = monster
@@ -237,24 +254,29 @@ def main():
                 if defend.health == 0:
                     break
 
+            quest.nextMonster()
             if monster.health <= 0:
-                print("congratulatons you killed the monster")
+                print("congratulatons you killed the monster\n")
+                break
             else:
-                print("you suck, you died")
+                print("you suck, you died\n")
                 break
 
+        if quest.monster == 1:
+            print("Congrat's dweeb, you live to fight another day\n")
 
-    def nextRoom():
-        print("You have entered the magical world of " + quest.level.location)
+    def exploreRoom():
+        print("You have entered the magical world of " + quest.room.location)
         intro = "Watch out nerd! There are {0} jocks here!\n"
-        print(intro.format(len(quest.level.monsterList)))
+        print(intro.format(len(quest.room.monsterList)))
+        quest.nextMonster()
         
     heroName = input("Hey kid, what do you want to call your Hero? ")
-    print("")
-    hero = Hero(heroName, 10, 3)
-    quest = Adventure(hero)
+
+    quest = Adventure(heroName, 10, 3)
 
     menu(quest)
+    print("You came, you saw, and the wedgied you to death")
 
     hero.initiative = quest.diceRoll()
     
