@@ -17,6 +17,9 @@ def main():
                    "E: Attack the Jock"]
 
     def menu(quest):
+        """ menu takes in a quest object. It provides the user with thier """
+        """ possible selections, checks their input, and handles their """
+        """ selections appropriately """
         # The while loop checks if the hero is alive, or there are no more
         # rooms
         while quest.hero.health > 0 and quest.room != 1:
@@ -75,6 +78,10 @@ def main():
                         battle()
 
     def battle():
+        """ battle handles the battles between monsters and hero's """"
+        """ battle will determine who goes first, who is attacking """
+        """ defending, and will decrement health appropriately """
+        """ battle will also notify the user of results and updates """
         # The condition is set to loop through all monsters in the room
         while(quest.monster != 1):
             # setting monster for readability in function
@@ -140,7 +147,7 @@ def main():
             # Win Case, if the monster's health drops to 0 the user wins.
             if monster.health <= 0:
                 print("Conratulations you knocked out the Jock!\n")
-                # if lootOdds in battle match lootOdds in room, treasure is 
+                # if lootOdds in battle match lootOdds in room, treasure is
                 # droped
                 if lootOdds == quest.room.lootOdds:
                     # This adds the loot from the monster to the hero's lootbag
@@ -154,10 +161,13 @@ def main():
                 break
         # This notifies the user they have completed their current location
         if quest.monster == 1 and hero.health != 0:
-            levelComplete = "Congrats Dweeb, you defeated the {0}!"
+            levelComplete = "Congrats Dweeb, you defeated {0}!"
             print(levelComplete.format(quest.room.location))
 
     def exploreRoom():
+        """ exploreRoom prints out the room you have entered, and the  """
+        """ and the number of monsters present. explore room also sets """
+        """ users initiative for the room and loads the first moster """
         # If there is a room
         if quest.room != 1:
             # format string that prints a welcome and the location name"
@@ -176,9 +186,7 @@ def main():
             # load the rooms first monster
             quest.nextMonster()
             # Set the users initiative for new room
-            # quest.hero.inititative = 
-            x = quest.diceRoll()
-            print("debug", x)
+            quest.hero.initiative = quest.diceRoll()
             print("iniitiative debug: ", quest.hero.initiative)
 
     def inputValidation(string):
@@ -198,18 +206,22 @@ def main():
                 print("\nNot on my watch!")
                 sys.exit()
             return userInput
-    
+
     # Let the user type the hero's name
     heroName = inputValidation("Hey kid, what do you want to call your Hero? ")
 
     # Create an adventure called quest, passeing the hero's name, health and
-    # strength 
-    quest = Adventure(heroName, 10, 3)
+    # strength
+    quest = Adventure(heroName, 10, 3, 1)
 
+    # Enter the menu function which provides user's there options and directs
+    # game play
     menu(quest)
 
+    # if Hero dies, print the following
     if quest.hero.health == 0:
         print("You came.. You saw... They wedgied you to death")
+    # if you beat all the rooms, print the following
     if quest.room == 1:
         print("Congratulations! You beat up all the Jocks!")
 
