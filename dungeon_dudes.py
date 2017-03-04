@@ -190,6 +190,9 @@ def main():
             print("iniitiative debug: ", quest.hero.initiative)
 
     def inputValidation(string):
+        """ inputValidation takes in a string and handles error checking """
+        """ that is needed amongst different user inputs to reduce """
+        """ redundancy. inputValidation returns the valid string """
         # continue to loop until condition is met
         while True:
             try:
