@@ -3,6 +3,7 @@ import random
 import sys
 random.seed()
 
+
 class Treasure:
 
     def __init__(self, title):
@@ -94,6 +95,7 @@ class Monster(Character):
     def __str__(self):
         monsterStats = "Monster\nHealth: {0}\nStrength: {1}\n"
         return monsterStats.format(self.health, self.strength)
+
 
 class Room:
     monsterLoot = ["Clean Underwear", "A Jocks Baseball Cap", "Chewed Gum",
@@ -192,6 +194,3 @@ class Adventure:
             self.monster = 1
         else:
             self.monster = self.room.popMonster()
-
-
-
