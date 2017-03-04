@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import random
+import sys
 
 
 class Treasure:
@@ -27,7 +28,7 @@ class Character:
 
     @health.setter
     def health(self, health):
-        """ Set the charachters health """
+        """ Set the characters health """
         self._health = health
 
     @property
@@ -54,12 +55,7 @@ class Character:
 
     def getLoot(self):
         """ returns the contents of the loot bag """
-        result = []
-        for items, treasure in enumerate(self.lootBag):
-            result.append(str(treasure))
-            result.append("\n")
-        return "".join(result)
-
+        return '\n'.join(self.lootBag)
     def addLoot(self, treasure):
             self.lootBag.append(treasure)
 
@@ -100,11 +96,16 @@ class Monster(Character):
 
 
 class Room:
+    monsterLoot = ["Clean Underwear", "A Jocks Baseball Cap", "Chewed Gum", \
+"Your Crushes Pom-Poms", "A Pocket-Protector", "Half of a PB&J", "A Jocks \
+Lunch Money and Some Pocket Lint", "The First six Digits of Your Crushes Phone \
+Number"]
 
     def __init__(self, location):
         self.location = location
         self.monsterList = []
         self.generateMonsters()
+        self.lootOdds = 0
 
     @property
     def location(self):
@@ -118,16 +119,17 @@ class Room:
         numMonsters = []
         for number, monsters in enumerate(self.monsterList):
             numMonsters.append(str(monsters))
-            numMonsters.append("\n")
         return "".join(numMonsters)
 
     def generateMonsters(self):
-        numMonsters = random.randint(1, 6)
+        numMonsters = random.randint(1, 1)
+        loot = random.randint(1, len(Room.monsterLoot))
         for monsters in range(numMonsters):
             monsterHealth = random.randint(1, 3)
             monsterStrength = random.randint(1, 3)
             monsterInitiative = random.randint(1, 6)
             monster = Monster(monsterHealth, monsterStrength, monsterInitiative)
+            monster.addLoot(Room.monsterLoot[loot-1])
             self.monsterList.append(monster)
 
     def popMonster(self):
@@ -144,7 +146,7 @@ Football Field", "The Gym", "The Movie Theatre", "The Parking Lot", "The \
 Classroom", "The Mall", "Your Crushes House", "The Diner", "The Playground"]
 
     def __init__(self, name, health, strength):
-        self.hero = hero(name, health, strength)
+        self.hero = Hero(name, health, strength)
         self.map = []
         self.buildMap()
         self.room = 0
@@ -165,10 +167,12 @@ Classroom", "The Mall", "Your Crushes House", "The Diner", "The Playground"]
         defense = self.turnRoll(defender.strength)
 
         if max(offense) >= max(defense):
-            defender.decreaseHealth()
+            return attacker
+        else:
+            return defender
 
     def buildMap(self):
-        numRooms = random.randint(8, 12)
+        numRooms = random.randint(1, 2)
         for number in range(numRooms):
             index = random.randint(1, len(Adventure.locations))
             room = Room(Adventure.locations.pop(index-1))
@@ -179,6 +183,7 @@ Classroom", "The Mall", "Your Crushes House", "The Diner", "The Playground"]
             self.room = 1
         else:
             self.room = self.map.pop()
+            self.room.lootOdds = random.randint(1, 3)
 
     def nextMonster(self):
         if len(self.room.monsterList) == 0:
@@ -192,97 +197,149 @@ def main():
 
     menuOptions = ["A: List items in the loot bag","B: Move to the next room",
                    "C: List your health", "D: List the monsters health", 
-                   "E: Attack the Monster"]
+                   "E: Attack the Jock"]
+
     def menu(quest):
-        while quest.hero.health > 0:
+        while quest.hero.health > 0 and quest.room != 1:
             try:
                 for items in menuOptions:
                     print(items)
                 print("")
-                userSelection = input("What would you like to do? ").lower()
-                print("")    
+                userSelection = inputValidation("What do you want to do? ")
             except ValueError:
-                print("Not today bossman")
+                print("Try again slick")
                 continue
             if userSelection not in ('a', 'b', 'c', 'd', 'e'):
                 print("Try again slick")
                 continue
             else:
                 if userSelection == 'a':
-                    print("Your loot:", quest.hero.getLoot())
+                    loot = "Your loot:\n{0}"
+                    print(loot.format(quest.hero.getLoot()))
 
                 if userSelection == 'b':
-                    if quest.room == 0 or len(quest.room.monsterList) == 0:
+                    if quest.room == 0 or quest.monster == 1:
                         quest.nextRoom()
                         exploreRoom()
-                    elif len(quest.room.monsterList) > 0:
+                    elif quest.monster.health > 0:
                         print("No Running!")
-
                 if userSelection == 'c':
                     print("Your health:", quest.hero.health)
-
                 if userSelection == 'd':
                     if quest.monster == 0:
                         print("Don't wet your pants, your safe\n")
                     elif quest.monster == 1:
                         print("They are gone sweetie, don't worry\n")
                     else:
-                        print("Monsters health:", quest.monster.health)
+                        print("Jocks health:", quest.monster.health)
                 if userSelection == 'e':
                     if quest.monster == 0:
-                        print("There's no one to kill, Psycho\n")
+                        print("There's no one to noogie, Psycho\n")
                     elif quest.monster == 1:
-                        print("Take a breath, you already kicked thier butts")
+                        print("Take a breath, you already kicked thier butts\n")
                     else:
                         battle()
 
     def battle():
         while(quest.monster != 1):    
             monster = quest.monster
+            lootOdds = random.randint(1, 3)
+            hero = quest.hero
             if hero.initiative >= monster.initiative:
-                attack = hero
-                defend = monster
+                attacker = hero
+                defender = monster
             else:
-                attack = monster
-                defend = hero
+                attacker = monster
+                defender = hero
 
             while(monster.health > 0 and hero.health > 0):
-                quest.combat(attack, defend)
-                if defend.health == 0:
+                hpUpdate = "Your Health: {0}\nJock Health: {1}"
+                winner = quest.combat(attacker, defender)
+                if winner == attacker and attacker == hero:
+                    print("Your wedgie was successful! Jock looses 1 hp")
+                    quest.monster.decreaseHealth()
+                elif winner == defender and defender == hero:
+                    print("The Jock tried to give you a swirly! He missed!")
+                elif winner == attacker and attacker == monster:
+                    print("The Jock gave you a swirly. You cried and lost 1 hp")
+                    quest.hero.decreaseHealth()
+                else:
+                    print("You tried to give the Jock a wedgie. You missed!")
+                if defender.health == 0:
                     break
-                quest.combat(defend, attack)
-                if defend.health == 0:
+
+                winner = quest.combat(defender, attacker)
+                if winner == attacker and attacker == hero:
+                    print("The Jock tried to give you a swirly! He missed!")
+                elif winner == defender and defender == hero:
+                    print("Your wedgie was successful! The Jock lost 1 hp")
+                    quest.monster.decreaseHealth()
+                elif winner == attacker and attacker == monster:
+                    print("You tried to give the Jock a wedgie. You missed!")
+                else:
+                    print("The Jock gave you a swirly. You cried and lost 1 hp")
+                    quest.hero.decreaseHealth()
+                print(hpUpdate.format(quest.hero.health, quest.monster.health),
+                      "\n")
+                if attacker.health == 0:
                     break
 
             quest.nextMonster()
             if monster.health <= 0:
-                print("congratulatons you killed the monster\n")
+                print("Conratulations you knocked out the Jock!\n")
+                if lootOdds == quest.room.lootOdds:
+                    quest.hero.addLoot(monster.getLoot())
+                    spoils = "You are now the proud owner of {0}!\n"
+                    print(spoils.format(monster.getLoot()))
                 break
             else:
-                print("you suck, you died\n")
                 break
 
-        if quest.monster == 1:
-            print("Congrat's dweeb, you live to fight another day\n")
+        if quest.monster == 1 and hero.health != 0:
+            levelComplete = "Congrats Dweeb, you defeated the {0}!"
+            print(levelComplete.format(quest.room.location))
 
     def exploreRoom():
-        print("You have entered the magical world of " + quest.room.location)
-        intro = "Watch out nerd! There are {0} jocks here!\n"
-        print(intro.format(len(quest.room.monsterList)))
-        quest.nextMonster()
+        if quest.room != 1:
+            intro = ("You have entered the magical world of {0}!\n"
+                     "Watch out Nerd! There {1} here!\n")
+            numMonsters = len(quest.room.monsterList)
+            if numMonsters == 1:
+                print(intro.format(quest.room.location, "is 1 Jock"))
+            else:
+                multMonsters = "are {0} Jocks"
+                print(intro.format(quest.room.location, 
+                      multMonsters.format(numMonsters)))
+            quest.nextMonster()
         
-    heroName = input("Hey kid, what do you want to call your Hero? ")
+    string = "Hey kid, what do you want to call your Hero? "
+    def inputValidation(string):
+        while True:
+            try:
+                userInput = input(string)
+                print("")
+            except ValueError:
+                print("Try again slick")
+                continue
+            except KeyboardInterrupt:
+                print("\nSo long NERD!")
+                sys.exit()
+            except EOFError:
+                print("\nNot on my watch!")
+                sys.exit()
+            return userInput
+
+    heroName = inputValidation(string)
 
     quest = Adventure(heroName, 10, 3)
 
+    quest.hero.initiative = quest.diceRoll()
     menu(quest)
-    print("You came, you saw, and the wedgied you to death")
 
-    hero.initiative = quest.diceRoll()
-    
-
-        
-    
+    if quest.hero.health == 0:
+        print("You came.. You saw... They wedgied you to death")
+    if quest.room == 1:
+        print("Congratulations! You beat up all the Jocks!")
 
 
 if __name__ == "__main__":
