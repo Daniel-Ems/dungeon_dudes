@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import random
-import sys  
+import sys
 from character_class import Treasure
 from character_class import Character
 from character_class import Hero
@@ -9,11 +9,8 @@ from character_class import Room
 from character_class import Adventure
 
 
-
-
 def main():
     random.seed()
-
     menuOptions = ["A: List items in the loot bag", "B: Move to the next room",
                    "C: List your health", "D: List the monsters health",
                    "E: Attack the Jock"]
