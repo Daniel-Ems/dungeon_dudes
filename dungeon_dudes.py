@@ -48,7 +48,7 @@ class Character:
     @initiative.setter
     def initiative(self, initiative):
         self._initiative = initiative
-    
+
     def decreaseHealth(self):
         """ Decrease health when they loose a battle """
         self._health -= 1
@@ -56,6 +56,7 @@ class Character:
     def getLoot(self):
         """ returns the contents of the loot bag """
         return '\n'.join(self.lootBag)
+
     def addLoot(self, treasure):
             self.lootBag.append(treasure)
 
@@ -96,10 +97,10 @@ class Monster(Character):
 
 
 class Room:
-    monsterLoot = ["Clean Underwear", "A Jocks Baseball Cap", "Chewed Gum", \
-"Your Crushes Pom-Poms", "A Pocket-Protector", "Half of a PB&J", "A Jocks \
-Lunch Money and Some Pocket Lint", "The First six Digits of Your Crushes Phone \
-Number"]
+    monsterLoot = ["Clean Underwear", "A Jocks Baseball Cap", "Chewed Gum",
+                   "Your Crushes Pom-Poms", "A Pocket-Protector",
+                   "Half of a PB&J", "A Jocks Lunch Money",
+                   "The First six Digits of Your Crushes Phone Number"]
 
     def __init__(self, location):
         self.location = location
@@ -128,7 +129,8 @@ Number"]
             monsterHealth = random.randint(1, 3)
             monsterStrength = random.randint(1, 3)
             monsterInitiative = random.randint(1, 6)
-            monster = Monster(monsterHealth, monsterStrength, monsterInitiative)
+            monster = Monster(monsterHealth, monsterStrength,
+                              monsterInitiative)
             monster.addLoot(Room.monsterLoot[loot-1])
             self.monsterList.append(monster)
 
@@ -139,11 +141,12 @@ Number"]
         roomDetails = "{0}\n{1}"
         return roomDetails.format(self.location, self.getMonsters())
 
-         
+
 class Adventure:
-    locations = ["The Bathroom", "The Arcade", "The Locker Room", "The \
-Football Field", "The Gym", "The Movie Theatre", "The Parking Lot", "The \
-Classroom", "The Mall", "Your Crushes House", "The Diner", "The Playground"]
+    locations = ["The Bathroom", "The Arcade", "The Locker Room",
+                 "The Football Field", "The Gym", "The Movie Theatre",
+                 "The Parking Lot", "The Classroom", "The Mall",
+                 "Your Crushes House", "The Diner", "The Playground"]
 
     def __init__(self, name, health, strength):
         self.hero = Hero(name, health, strength)
@@ -195,8 +198,8 @@ Classroom", "The Mall", "Your Crushes House", "The Diner", "The Playground"]
 def main():
     random.seed()
 
-    menuOptions = ["A: List items in the loot bag","B: Move to the next room",
-                   "C: List your health", "D: List the monsters health", 
+    menuOptions = ["A: List items in the loot bag", "B: Move to the next room",
+                   "C: List your health", "D: List the monsters health",
                    "E: Attack the Jock"]
 
     def menu(quest):
@@ -236,12 +239,12 @@ def main():
                     if quest.monster == 0:
                         print("There's no one to noogie, Psycho\n")
                     elif quest.monster == 1:
-                        print("Take a breath, you already kicked thier butts\n")
+                        print("Take a breath, you already won\n")
                     else:
                         battle()
 
     def battle():
-        while(quest.monster != 1):    
+        while(quest.monster != 1):
             monster = quest.monster
             lootOdds = random.randint(1, 3)
             hero = quest.hero
@@ -256,12 +259,12 @@ def main():
                 hpUpdate = "Your Health: {0}\nJock Health: {1}"
                 winner = quest.combat(attacker, defender)
                 if winner == attacker and attacker == hero:
-                    print("Your wedgie was successful! Jock looses 1 hp")
+                    print("Your wedgie was successful! The Jock lost 1 hp")
                     quest.monster.decreaseHealth()
                 elif winner == defender and defender == hero:
                     print("The Jock tried to give you a swirly! He missed!")
                 elif winner == attacker and attacker == monster:
-                    print("The Jock gave you a swirly. You cried and lost 1 hp")
+                    print("The Jocks swirly made you cry and lose 1 hp")
                     quest.hero.decreaseHealth()
                 else:
                     print("You tried to give the Jock a wedgie. You missed!")
@@ -277,7 +280,7 @@ def main():
                 elif winner == attacker and attacker == monster:
                     print("You tried to give the Jock a wedgie. You missed!")
                 else:
-                    print("The Jock gave you a swirly. You cried and lost 1 hp")
+                    print("The Jocks swirly made you cry and lose 1 hp")
                     quest.hero.decreaseHealth()
                 print(hpUpdate.format(quest.hero.health, quest.monster.health),
                       "\n")
@@ -308,11 +311,12 @@ def main():
                 print(intro.format(quest.room.location, "is 1 Jock"))
             else:
                 multMonsters = "are {0} Jocks"
-                print(intro.format(quest.room.location, 
+                print(intro.format(quest.room.location,
                       multMonsters.format(numMonsters)))
             quest.nextMonster()
-        
+
     string = "Hey kid, what do you want to call your Hero? "
+
     def inputValidation(string):
         while True:
             try:
