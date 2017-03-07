@@ -78,7 +78,7 @@ def main():
                         battle()
 
     def battle():
-        """ battle handles the battles between monsters and hero's """"
+        """ battle handles the battles between monsters and hero's """
         """ battle will determine who goes first, who is attacking """
         """ defending, and will decrement health appropriately """
         """ battle will also notify the user of results and updates """
